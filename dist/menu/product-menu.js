@@ -1,20 +1,48 @@
-import {ProductManagement} from "../management/product/producr-management";
-import * as rl from 'readline-sync'
-import {Product} from "../model/product";
-import {CategoryManagement} from "../category/category-management";
-
-enum ProductChoice {
-    SHOW_ALL_PRODUCT = 1,
-    ADD_PRODUCT = 2,
-    UPDATE_PRODUCT = 3,
-    REMOVE_PRODUCT = 4,
-    SEARCH_BY_NAME = 5,
-    SORT_PRODUCT = 6,
-    ADD_PRODUCT_TO_CATEGORY = 7,
-}
-export class ProductMenu {
-    private productManagement = new ProductManagement();
-    private categoryManagement = new CategoryManagement();
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ProductMenu = void 0;
+const producr_management_1 = require("../management/product/producr-management");
+const rl = __importStar(require("readline-sync"));
+const product_1 = require("../model/product");
+const category_management_1 = require("../category/category-management");
+var ProductChoice;
+(function (ProductChoice) {
+    ProductChoice[ProductChoice["SHOW_ALL_PRODUCT"] = 1] = "SHOW_ALL_PRODUCT";
+    ProductChoice[ProductChoice["ADD_PRODUCT"] = 2] = "ADD_PRODUCT";
+    ProductChoice[ProductChoice["UPDATE_PRODUCT"] = 3] = "UPDATE_PRODUCT";
+    ProductChoice[ProductChoice["REMOVE_PRODUCT"] = 4] = "REMOVE_PRODUCT";
+    ProductChoice[ProductChoice["SEARCH_BY_NAME"] = 5] = "SEARCH_BY_NAME";
+    ProductChoice[ProductChoice["SORT_PRODUCT"] = 6] = "SORT_PRODUCT";
+    ProductChoice[ProductChoice["ADD_PRODUCT_TO_CATEGORY"] = 7] = "ADD_PRODUCT_TO_CATEGORY";
+})(ProductChoice || (ProductChoice = {}));
+class ProductMenu {
+    constructor() {
+        this.productManagement = new producr_management_1.ProductManagement();
+        this.categoryManagement = new category_management_1.CategoryManagement();
+    }
     run() {
         let choice = -1;
         do {
@@ -25,7 +53,7 @@ export class ProductMenu {
             console.log('4. Xóa sản phẩm');
             console.log('5. Tìm kiếm sản phẩm theo tên');
             console.log('6. Sắp xếp sản phẩm theo giá giảm dần');
-            console.log('7. Thêm sản phẩm vào danh mục')
+            console.log('7. Thêm sản phẩm vào danh mục');
             console.log('0. Quay lại');
             choice = +rl.question('nhập lựa chọn: ');
             switch (choice) {
@@ -57,39 +85,38 @@ export class ProductMenu {
                     console.log('--Thêm sản phẩm vào danh mục--');
                     let categories = this.categoryManagement.getAll();
                     let products = this.productManagement.getAll();
-                    if (categories.length == 0){
+                    if (categories.length == 0) {
                         console.log('Hiện tại chưa có danh mục sản phẩm!');
                         break;
                     }
-                    for (let i = 0; i < categories.length; i++){
-                        console.log(`${i + 1} | ${categories[i].name}`)
+                    for (let i = 0; i < categories.length; i++) {
+                        console.log(`${i + 1} | ${categories[i].name}`);
                     }
-                    let id = +rl.question('Nhập mã sản phẩm cần thêm vào danh mục:   ')
+                    let id = +rl.question('Nhập mã sản phẩm cần thêm vào danh mục:   ');
                     let productIndex = this.productManagement.findById(id);
                     if (productIndex == -1) {
                         console.log('Mã sản phẩm không tồn tại !');
                         break;
-                    }else {
+                    }
+                    else {
                         let categoryName = rl.question('Nhập tên danh mục sản phẩm cần thêm:  ');
                         let category = this.categoryManagement.findByName(categoryName);
-                        if (category){
+                        if (category) {
                             products[productIndex].category = category;
                             category.products.push(products[productIndex]);
-                        }else {
+                        }
+                        else {
                             console.log('Tên danh mục không tồn tại');
                         }
                     }
-
                     break;
                 }
             }
-
-        }while (choice != 0);
+        } while (choice != 0);
     }
-
-    private sortDown() {
+    sortDown() {
         let products = this.productManagement.getAll();
-        let arrSort: Product[] = [];
+        let arrSort = [];
         if (products.length !== 0) {
             for (let product of products) {
                 arrSort.push(product);
@@ -118,8 +145,8 @@ export class ProductMenu {
             }
         }
     }
-
-    private searchByName() {
+    searchByName() {
+        var _a;
         let products = this.productManagement.getAll();
         let arrLinearSearch = [];
         let nameProduct = rl.question('nhập tên sản phẩm: ');
@@ -127,7 +154,8 @@ export class ProductMenu {
         for (let i = 0; i < products.length; i++) {
             if (products[i].name.includes(nameProduct)) {
                 arrLinearSearch.push(products[i]);
-            } else {
+            }
+            else {
                 flag = false;
             }
         }
@@ -136,37 +164,37 @@ export class ProductMenu {
         }
         if (flag) {
             for (let product of arrLinearSearch) {
-                console.log(`Id: ${product.id} | Ten: ${product.name} | Mo ta: ${product.description} | Gia: ${product.price} | ${product.category?.name}`)
+                console.log(`Id: ${product.id} | Ten: ${product.name} | Mo ta: ${product.description} | Gia: ${product.price} | ${(_a = product.category) === null || _a === void 0 ? void 0 : _a.name}`);
                 flag = true;
             }
-        } else {
-            console.log('Sản phẩm không tồn tại')
+        }
+        else {
+            console.log('Sản phẩm không tồn tại');
         }
     }
-
-    private removeProduct() {
+    removeProduct() {
         console.log('--Xóa sản phẩm--');
         let products = this.productManagement.getAll();
         for (let product of products) {
-            console.log(`Id: ${product.id} | Tên: ${product.name}`)
+            console.log(`Id: ${product.id} | Tên: ${product.name}`);
         }
         let idRemove = +rl.question('Nhập mã sản phẩm muốn xóa: ');
         let lengthProduct = products.length;
         this.productManagement.removeById(idRemove);
         if (lengthProduct !== products.length) {
             console.log('Xóa thành công!');
-        } else {
+        }
+        else {
             console.log('Xóa thật bại!');
         }
     }
-
-    private updateProduct() {
+    updateProduct() {
         console.log('--Cập nhật sản phẩm--');
         let products = this.productManagement.getAll();
         for (let i = 0; i < products.length; i++) {
-            console.log(`Id: ${products[i].id} | Tên: ${products[i].name}`)
+            console.log(`Id: ${products[i].id} | Tên: ${products[i].name}`);
         }
-        let idProduct = +rl.question("Nhập id danh mục muốn sửa:")
+        let idProduct = +rl.question("Nhập id danh mục muốn sửa:");
         let indexUpdate = this.productManagement.findById(idProduct);
         if (indexUpdate !== -1) {
             let product = ProductMenu.inputProduct();
@@ -175,30 +203,29 @@ export class ProductMenu {
                 product.category = products[indexUpdate].category;
             this.productManagement.updateById(idProduct, product);
             console.log('Sửa sản phẩm thành công!');
-        } else {
-            console.log('Nhập sai mã sản phẩm!')
+        }
+        else {
+            console.log('Nhập sai mã sản phẩm!');
         }
     }
-
-    private creatProduct() {
+    creatProduct() {
         let product = ProductMenu.inputProduct();
         this.productManagement.creatNew(product);
-        console.log('Thêm thành công!')
+        console.log('Thêm thành công!');
     }
-
-    private static inputProduct() {
+    static inputProduct() {
         console.log('--Thêm sản phẩm mới--');
         let name = rl.question('Nhập tên sản phẩm: ');
         let price = +rl.question('Nhập giá sản phẩm: ');
         let description = rl.question('Nhập mô tả: ');
-        return new Product(name, price, description);
+        return new product_1.Product(name, price, description);
     }
-
-    private showAllProducts() {
+    showAllProducts() {
         console.log('--Hiển thị danh sách sản phẩm--');
         let products = this.productManagement.getAll();
         for (let i = 0; i < products.length; i++) {
-            console.log(`ID: ${i+1} | Tên: ${products[i].name} | Giá: ${products[i].price} | Mô tả: ${products[i].description}`)
+            console.log(`ID: ${i + 1} | Tên: ${products[i].name} | Giá: ${products[i].price} | Mô tả: ${products[i].description}`);
         }
     }
 }
+exports.ProductMenu = ProductMenu;

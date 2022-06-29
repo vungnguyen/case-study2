@@ -24,9 +24,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginMenu = void 0;
-const user_management_1 = require("../management/user-management");
+const user_management_1 = require("../management/user/user-management");
 const user_1 = require("../model/user");
 const rl = __importStar(require("readline-sync"));
+const e_role_1 = require("../model/e-role");
+const admin_menu_1 = require("./admin-menu");
+const user_menu_1 = require("./user-menu");
 var LoginChoice;
 (function (LoginChoice) {
     LoginChoice[LoginChoice["ADMIN"] = 1] = "ADMIN";
@@ -35,6 +38,8 @@ var LoginChoice;
 class LoginMenu {
     constructor() {
         this.userManagement = new user_management_1.UserManagement();
+        this.adminMenu = new admin_menu_1.AdminMenu();
+        this.userMenu = new user_menu_1.UserMenu();
     }
     inputUser() {
         let username = this.inputUsername();
@@ -120,26 +125,41 @@ class LoginMenu {
             switch (choice) {
                 case LoginChoice.ADMIN: {
                     console.log(' ---Đăng nhập---');
-                    let username = rl.question('nhập tài khoản: ');
-                    let password = rl.question('nhập mật khẩu: ');
-                    let currentUser = this.userManagement.login(username, password);
-                    if (currentUser) {
-                        // check role là admin thì mở admin,user thì mở user
-                    }
-                    else {
-                        console.log('tài khoản hoặc mật khẩu không đúng ');
-                    }
+                    this.loginForm();
                     break;
                 }
                 case LoginChoice.REGISTER: {
                     console.log('---Đăng ký tài khoản---');
-                    let user = this.inputUser();
-                    this.userManagement.creatNew(user);
-                    console.log(' Đăng ký thành công!');
+                    this.registerForm();
                     break;
                 }
             }
         } while (choice != 0);
+    }
+    registerForm() {
+        let user = this.inputUser();
+        this.userManagement.creatNew(user);
+        console.log(' Đăng ký thành công!');
+    }
+    loginForm() {
+        let username = rl.question('nhập tài khoản: ');
+        let password = rl.question('nhập mật khẩu: ');
+        let currentUser = this.userManagement.login(username, password);
+        if (currentUser) {
+            console.log('Đăng nhập thành công!');
+            // check role là admin thì mở admin,user thì mở user
+            if (currentUser.role == e_role_1.Role.ADMIN) {
+                // mở menu admin
+                this.adminMenu.run();
+            }
+            else {
+                // mở menu user
+                this.userMenu.run();
+            }
+        }
+        else {
+            console.log('tài khoản hoặc mật khẩu không đúng ');
+        }
     }
 }
 exports.LoginMenu = LoginMenu;

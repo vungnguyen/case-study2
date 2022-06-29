@@ -68,8 +68,9 @@ export class UserManagement implements IUserManagement{
 
     login(username: string, password: string): User | null {
         for (let user of UserManagement.users) {
-            if (username == user.username && password == user.password) {}
-            return user;
+            if (username == user.username && password == user.password) {
+                return user;
+            }
         }
         return null;
     }

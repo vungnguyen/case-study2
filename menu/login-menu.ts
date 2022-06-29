@@ -114,6 +114,7 @@ export class LoginMenu {
         let password = rl.question('nhập mật khẩu: ');
         let currentUser = this.userManagement.login(username, password);
         if (currentUser) {
+            console.log('Đăng nhập thành công!');
             // check role là admin thì mở admin,user thì mở user
             if (currentUser.role == Role.ADMIN) {
                 // mở menu admin
